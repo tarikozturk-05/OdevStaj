@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 
-const Register = () => {
+const Register = ({setUserinfo}) => {
 
   const navigate = useNavigate();
 
@@ -38,7 +38,7 @@ const postUserApi = async () => {
   try {
     const { data } = await axios.post(Url ,veriler);
    console.log(data);
-
+   setUserinfo(data)
    navigate("/home");
 
   } catch (error) {
@@ -87,7 +87,7 @@ const handleSubmit=(e)=>{
             </label>
             <input
               type="text"
-              className="form-control"
+              className="form-control p-3 "
               id="firstname"
               aria-describedby="emailHelp"
               value={firstname || ""}
@@ -103,7 +103,7 @@ const handleSubmit=(e)=>{
             <input
             
               type="text"
-              className="form-control"
+              className="form-control p-3 "
               id="lastname"
               value={lastname || ""}
               onChange={(e) => setLastname(e.target.value)}
@@ -122,7 +122,7 @@ const handleSubmit=(e)=>{
                 minLength="8"
               required
               type="email"
-              className="form-control"
+              className="form-control p-3 "
               id="Email"
               aria-describedby="emailHelp"
               value={email || ""}
@@ -142,7 +142,7 @@ const handleSubmit=(e)=>{
              minLength="8"
             required
               type="password"
-              className="form-control"
+              className="form-control p-3 "
               id="password"
               value={password || ""}
               onChange={(e) => setPassword(e.target.value)}
@@ -163,7 +163,7 @@ const handleSubmit=(e)=>{
              minLength="8"
             required
               type="password"
-              className="form-control"
+              className="form-control p-3 "
               id="passwordtwo"
               value={passwordtwo || ""}
               onChange={(e) => setPasswordtwo(e.target.value)}
