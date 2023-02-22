@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 
@@ -12,8 +12,13 @@ const Register = ({setUserinfo}) => {
 
   const [lastname, setLastname] = useState()
   const [email, setEmail] = useState()
-  const [password, setPassword] = useState()
-  const [passwordtwo, setPasswordtwo] = useState()
+  const [password, setPassword] = useState("")
+  const [passwordtwo, setPasswordtwo] = useState("")
+
+
+  const [regexerr, setRegexerr] = useState(true)
+const [messageregex, setMessageregex] = useState("")
+
 
   // console.log(firstname);
   // console.log(lastname);
@@ -35,6 +40,8 @@ const veriler = {
 const Url = `https://backend.gohealthination.com/users/register/`
 
 const postUserApi = async () => {
+
+    // console.log("tebrikler geçtin bro");
   try {
     const { data } = await axios.post(Url ,veriler);
    console.log(data);
@@ -57,31 +64,76 @@ const handleSubmit=(e)=>{
 
 
   if(passwordtwo == password){
-    // console.log(veriler);
-    postUserApi()
 
+// console.log("kontrol zamani ");
+    kontrolzamani()
 
+       }else{
 
-
-  }else{
-    alert( "şifrenizi yanliş girdiniz tekrar deneyiniz!")
+        // console.log("error1 şifreler ayni değil ");
+        setRegexerr(false)
+        setMessageregex("Passwords entered are different from each other")
   }
-
-
-
-
- 
- 
 }
+
+
+
+const kontrolzamani = ()=>{
+
+  
+//! regexerr
+let kontrol= /^(?=.*?[a-zA-Z])(?=.*?[0-9]).{8,}$/
+let gectimi = kontrol.test(password)
+
+setRegexerr(gectimi) 
+
+
+// console.log(gectimi ,"-->gectimi");
+// console.log(regexerr , "-->regexerr");
+
+// if(regexerr){
+
+//   console.log(gectimi ,"-->gectimi");
+// console.log(regexerr , "--> regexerr");
+
+//  postUserApi()
+
+//     }else{
+//       console.log("2.errrora yakalandin");
+//      setMessageregex("Your password must be at least 1 letter, 1 number and longer than 8 characters")
+//  }
+
+}
+
+
+useEffect(() => {
+  
+if(password.length > 0){
+    if(regexerr){
+
+ postUserApi()
+
+    }else{
+      // console.log("2.errrora yakalandin");
+     setMessageregex("Your password must be at least 1 letter, 1 number and longer than 8 characters")
+ }
+
+}
+
+}, [regexerr])
+
+
 
   return (
     <div>
       <div className="mt-5">
+
         <h1 className="text-primary text-center">Register</h1>
-        <form className="container w-25 "
+        <form style={{"maxWidth":"30rem","minWidth":"15rem"}} 
+        className="container "
         onSubmit={handleSubmit}>
 
-          <div className="mb-3">
+          <div className="mb-3 ">
             <label htmlFor="firstname" className="form-label fw-bold  fs-4 ">
               First Name
             </label>
@@ -116,7 +168,7 @@ const handleSubmit=(e)=>{
               htmlFor="Email"
               className="form-label fw-bold  fs-4 "
             >
-              Email address
+              Email address<span className='text-danger'>*</span>
             </label>
             <input
                 minLength="8"
@@ -136,7 +188,7 @@ const handleSubmit=(e)=>{
               htmlFor="password"
               className="form-label fw-bold fs-4 "
             >
-              Password
+              Password<span className='text-danger'>*</span>
             </label>
             <input
              minLength="8"
@@ -148,7 +200,7 @@ const handleSubmit=(e)=>{
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-
+          {!regexerr && <p style={{"border":"4px solid red"}}><span  className='text-danger'>{messageregex}</span></p>}
 
 
 
@@ -157,7 +209,7 @@ const handleSubmit=(e)=>{
               htmlFor="password"
               className="form-label fw-bold fs-4 "
             >
-            Confirm Password 
+            Confirm Password<span className='text-danger'>*</span>
             </label>
             <input
              minLength="8"
@@ -173,10 +225,10 @@ const handleSubmit=(e)=>{
           <button type="submit" className="btn btn-primary">
             Submit
           </button>
-
-    <br />
+          <br />
+      
     
-        <div>  <Link to="/">zaten bir hesabin varmi?</Link></div>
+        <div>  <Link to="/">Zaten bir hesabin varmi?</Link></div>
         </form>
       </div>
 

@@ -8,7 +8,7 @@ const Home = ({userinfo}) => {
 <div>
 
     {!userinfo && 
-   <h2>Kullanici kayitli degil lütfen <Link to={"/register"}>Giriş Yapin</Link> </h2> }
+   <h2>Kullanici kayitli degil lütfen <Link to={"/"}>Giriş Yapin</Link> </h2> }
 
 
 

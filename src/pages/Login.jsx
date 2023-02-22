@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 
@@ -10,8 +10,11 @@ const Login = ({setUserinfo}) => {
 
   
   const [email, setEmail] = useState()
-  const [password, setPassword] = useState()
+  const [password, setPassword] = useState("")
   const [username, setUsername] = useState()
+
+  const [loginRegexErr, setLoginRegexErr] = useState(true)
+  const [loginMessageErr, setLoginMessageErr] = useState("")
 
 const veriler = {
   "email" : `${email}`,
@@ -26,20 +29,23 @@ const veriler = {
 const Url = `https://backend.gohealthination.com/users/dj-rest-auth/login/`
 
 const postUserApi = async () => {
+  // console.log("1.giriş");
   try {
+    // console.log("2.giriş");
     const { data } = await axios.post(Url ,veriler);
    console.log(data);
       if (data){
         setUserinfo(data)
         navigate("/home")
       }else{
-        alert("Email yada sifre yanliş girilmiş")
+        console.log(" if else error --> Email yada sifre yanliş girilmiş")
       
       }
    
 
   } catch (error) {
-    alert(error.message);
+    setLoginRegexErr(false)
+    setLoginMessageErr("catch error --> Email yada sifre yanliş girilmiş.Lütfen tekrar deneyiniz");
   }
 };
 
@@ -51,16 +57,45 @@ const postUserApi = async () => {
 
 const handleSubmit=(e)=>{
   e.preventDefault()
-  postUserApi()
+ kontrollogin()
+
+}
+
+
+const kontrollogin = ()=>{
+
+  let kontrol= /^(?=.*?[a-zA-Z])(?=.*?[0-9]).{8,}$/
+  let gectimi = kontrol.test(password)
+  
+  setLoginRegexErr(gectimi)
 
 
 }
+
+
+useEffect(() => {
+  
+  if(password.length > 0){
+      if(loginRegexErr){
+  
+   postUserApi()
+  
+      }else{
+        // console.log("2.errrora yakalandin");
+       setLoginMessageErr("Your password must be at least 1 letter, 1 number and longer than 8 characters")
+   }
+  
+  }
+  
+  }, [loginRegexErr])
+  
+
 
   return (
     <div>
       <div className="mt-5">
         <h1 className="text-primary text-center">Login</h1>
-        <form className="container w-25 "
+        <form style={{"maxWidth":"30rem","minWidth":"15rem"}}  className="container  "
         onSubmit={handleSubmit}>
 
           <div className="mb-3">
@@ -85,7 +120,7 @@ const handleSubmit=(e)=>{
               htmlFor="Email"
               className="form-label fw-bold  fs-4 "
             >
-              Email address
+              Email address<span className='text-danger'>*</span>
             </label>
             <input
          
@@ -107,7 +142,7 @@ const handleSubmit=(e)=>{
               htmlFor="password"
               className="form-label fw-bold fs-4 "
             >
-              Password
+              Password<span className='text-danger'>*</span>
             </label>
             <input
              minLength="8"
@@ -119,6 +154,8 @@ const handleSubmit=(e)=>{
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+
+          {!loginRegexErr && <p style={{"border":"4px solid red"}}><span  className='text-danger'>{loginMessageErr}</span></p>}
 
           <button type="submit" className="btn btn-primary">
             Submit
