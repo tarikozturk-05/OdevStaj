@@ -165,7 +165,7 @@ useEffect(() => {
 
 
     
-        <div>  <Link to="/register">henüz kayit olmadinmi?</Link></div>
+        <div>  <Link to="/register">henüz kayit olmadinmmmmi?</Link></div>
         </form>
       </div>
 
